@@ -21,6 +21,9 @@ This repository contains the official implementation for searching, training, an
                                 for Medical Scans
 ```
 
+## Dataset
+
+Download from: [DATASET](https://drive.google.com/drive/folders/16BRmpJfa_fV5vXMs7WLQdSEpQv-qMkeo?usp=sharing)
 ## 🚀 Pipeline Overview
 1. **Dataset Sampling & Balancing:** Filter and split medical domain scans (`mammo-bench`) while ensuring perfect demographic group representation over density classifications.
 
