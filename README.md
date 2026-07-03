@@ -23,7 +23,8 @@ This repository contains the official implementation for searching, training, an
 
 ## Dataset
 
-Download from: [DATASET](https://drive.google.com/drive/folders/16BRmpJfa_fV5vXMs7WLQdSEpQv-qMkeo?usp=sharing)
+Download and unzip from: [DATASET]([https://drive.google.com/drive/folders/16BRmpJfa_fV5vXMs7WLQdSEpQv-qMkeo?usp=sharing](https://drive.google.com/file/d/1_lU1tOPnjN4B6phRV5Mx05pJ5KfKDqNE/view?usp=sharing))
+Or execute the script 0_getData.py
 ## 🚀 Pipeline Overview
 1. **Dataset Sampling & Balancing:** Filter and split medical domain scans (`mammo-bench`) while ensuring perfect demographic group representation over density classifications.
 
