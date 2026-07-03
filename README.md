@@ -8,7 +8,17 @@ This repository contains the official implementation for searching, training, an
 │   ├── div2k/                # HR and LR training subsets (Natural Domain)
 │   ├── mammo_train/          # Sampled Mammo balanced training patches
 │   └── mammo_val/            # Sampled Mammo balanced validation patches
-├── top_5_pareto_models.csv   # Architecture configuration definitions
+├── Data/
+│   └── High/                 # High resolution datasets
+│   │   ├── Set5/             # HR set5 images (not in this repo)
+│   │   └── mammo_val/        # HR mammography images
+│   └── Lowx2/                # LR resolution datasets (scale x2)
+│   │   ├── Set5/             # HR set5 images (not in this repo)
+│   │   └── mammo_val/        # HR mammography images
+│   └── Lowx4/                # LR resolution datasets (scale x2)
+│       ├── Set5/             # HR set5 images (not in this repo)
+│       └── mammo_val/        # HR mammography images
+├── pareto_models.csv         # Architecture configuration definitions
 ├── top_5_pareto_global.csv   # Comprehensive performance description
 │                               metrics for Pareto frontiers
 ├── 1_select_mammo_images.py  # Balanced dataset sampler for Mammography
@@ -23,7 +33,7 @@ This repository contains the official implementation for searching, training, an
 
 ## Dataset
 
-Download and unzip from: [DATASET]([https://drive.google.com/drive/folders/16BRmpJfa_fV5vXMs7WLQdSEpQv-qMkeo?usp=sharing](https://drive.google.com/file/d/1_lU1tOPnjN4B6phRV5Mx05pJ5KfKDqNE/view?usp=sharing))
+Download and unzip from: [DATASET]([[https://drive.google.com/drive/folders/16BRmpJfa_fV5vXMs7WLQdSEpQv-qMkeo?usp=sharing](https://drive.google.com/file/d/1_lU1tOPnjN4B6phRV5Mx05pJ5KfKDqNE/view?usp=sharing)](https://drive.google.com/file/d/1uzvq4-Ad-sBzQQvt8yui9aOwM_SfxVya/view?usp=sharing))
 
 Or execute the script `0_getData.py` to download the file, unzip and delete de zip file.
 ## 🚀 Pipeline Overview
@@ -55,6 +65,11 @@ To run the replication selection filter:
 The repository includes the structural descriptions for the top 5 models discovered by the NSGA-III evolutionary algorithm optimizing trade-offs inside the BASS search space:
 * `pareto_models.csv`: Defines structural gene variables (number of residual groups, filter capacities, channel attention reduction, etc.) for each model.
 * `top_5_pareto_global.csv`: Contains metadata descriptions, performance parameters, and efficiency metrics supporting the multi-objective selection choices.
+
+You can modify the architecture according to:
+
+![Search space](figs/BASS2.svg)
+
 
 ## 🏋️‍♂️ Training Phase 1: Natural Images (DIV2K)
 
@@ -99,12 +114,16 @@ python 4_finetune_mammo_SR.py \
     --val_csv DATASET/mammo_val.csv
 ```
 
+The description of degrade process is ilustrated here
+![workflow](figs/degrade_process.svg)
 ### 📈 Tracking & Outputs
 Metrics such as Peak Signal-to-Noise Ratio (PSNR) and Mean Absolute Error (MAE) are saved automatically into organized result summary ledgers:
 
 * DATASET/mammo_split_summary.txt: Details dataset distribution tallies and demographic safety assertions.
 
 * FINETUNE_RESULTS/ft_run_[timestamp]/finetune_summary.csv: Master dashboard tracking historical evaluation parameters for the Pareto-frontier models.
+
+## Testing
 
 ## 🛠️ Evironmente Requirements
 The requirementes are listed in the `requirements.txt` file
