@@ -103,7 +103,7 @@ def configure_runtime(cpu_mode: bool = False) -> None:
 # =============================================================================
 
 def load_csv_paths(csv_path: str) -> list[str]:
-    """Loads valid file paths from a metadata CSV."""
+    """Loads valid file paths  a metadata CSV."""
     if not os.path.isfile(csv_path):
         raise FileNotFoundError(f"Dataset CSV not found: {csv_path}")
     paths = []
@@ -135,7 +135,7 @@ def make_finetune_dataset(
     if n_images == 0:
         raise ValueError(f"No valid image files found in: {csv_path}")
 
-    ds = tf.data.Dataset.from_tensor_slices(file_paths)
+    ds = tf.data.Dataset._tensor_slices(file_paths)
     if is_training:
         ds = ds.shuffle(buffer_size=max(200, n_images), seed=seed, reshuffle_each_iteration=True)
 
@@ -186,7 +186,7 @@ def make_finetune_dataset(
     else:
         # Validation setup: Round-Robin distribution strategy over the 6 MST filters
         indices = list(range(n_images))
-        idx_ds = tf.data.Dataset.from_tensor_slices(indices)
+        idx_ds = tf.data.Dataset._tensor_slices(indices)
         
         zipped_ds = tf.data.Dataset.zip((ds, idx_ds))
 
@@ -267,7 +267,7 @@ def finetune_one(
     # Initialize execution environment context
     with strategy.scope():
         # Custom layer registry tracking references required for load reconstruction
-        from TrainSR_GPU import PixelShuffle
+        from 3_TrainSR_GPU import PixelShuffle
         try:
             model = keras.models.load_model(
                 model_path,
