@@ -8,9 +8,10 @@ import datetime
 import random
 from dataclasses import dataclass
 from typing import List, Tuple, Optional
-
 import numpy as np
 import tensorflow as tf
+import argparse
+import sys
 
 keras = tf.keras
 layers = tf.keras.layers
@@ -553,11 +554,15 @@ def fit_stage(
 # 9) Main
 # ============================================================
 def main():
-    # -------------------- EDIT THESE --------------------
-    directory_train = r"DATASET/DIV2K_train_HR"
-    directory_val   = r"DATASET/DIV2K_valid_HR"
-    genes_csv       = r"pareto_models.csv"
-    # ----------------------------------------------------
+    args = parse_args()
+    directory_train = args.directory_train
+    directory_val = args.directory_val
+    genes_csv = args.genes_csv
+    base_seed = args.base_seed
+    batch_size = args.batch_size
+    overlap_val = args.overlap_val
+    upscale_factor = args.upscale_factor
+
 
     # VM + A100:
     CPU_MODE = False  # MUST be False in GPU VM/Docker
@@ -573,16 +578,11 @@ def main():
     print("GPUs:", len(tf.config.list_logical_devices("GPU")))
 
     # Reproducibility (CPU vs GPU not bit-identical)
-    base_seed = 1
     random.seed(base_seed)
     np.random.seed(base_seed)
     tf.random.set_seed(base_seed)
-
-    batch_size = 64
-    overlap_val = 0.1
-    upscale_factor = 4
     ratio = upscale_factor
-    outputspath = "outputs4x"
+    outputspath = f"outputs{upscale_factor}"
     
 
 
@@ -717,6 +717,20 @@ def main():
 
     print("\nDONE. Outputs at:", root)
     print("Summary:", summary_path)
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Training configuration")
+
+    parser.add_argument("--directory_train",type=str,default="DATASET/DIV2K_train_HR",help="Training images directory")
+    parser.add_argument("--directory_val",type=str,default="DATASET/DIV2K_valid_HR",help="Validation images directory")
+    parser.add_argument("--genes_csv",type=str,default="pareto_models.csv",help="CSV containing model genes")
+    parser.add_argument("--base_seed",type=int,default=1,help="Random seed")
+    parser.add_argument("--batch_size",type=int,default=64,help="Batch size")
+    parser.add_argument("--overlap_val",type=float,default=0.1,help="Validation overlap fraction")
+    parser.add_argument("--upscale_factor",type=int,default=4,choices=[2, 4],help="Super-resolution scale factor")
+
+    return parser.parse_args()
 
 
 if __name__ == "__main__":
