@@ -562,7 +562,8 @@ def main():
     batch_size = args.batch_size
     overlap_val = args.overlap_val
     upscale_factor = args.upscale_factor
-
+    max_epochs_st1 = args.max_epochs1
+    max_epochs_st2 = args.max_epochs2
 
     # VM + A100:
     CPU_MODE = False  # MUST be False in GPU VM/Docker
@@ -654,7 +655,7 @@ def main():
             val_ds=val_ds_st1,
             steps_per_epoch=st1_train_steps,
             val_steps=st1_val_steps,
-            max_epochs=200,              # high cap; ES decides
+            max_epochs=max_epochs_st1,              # high cap; ES decides
             stage_dir=gene_dir,
             stage_name="stage1_p64",
             es_patience=14,
@@ -675,7 +676,7 @@ def main():
             val_ds=val_ds_st2,
             steps_per_epoch=st2_train_steps,
             val_steps=st2_val_steps,
-            max_epochs=120,              # high cap; ES decides
+            max_epochs=max_epochs_st2,              # high cap; ES decides
             stage_dir=gene_dir,
             stage_name="stage2_p128",
             es_patience=8,
@@ -729,7 +730,8 @@ def parse_args():
     parser.add_argument("--batch_size",type=int,default=64,help="Batch size")
     parser.add_argument("--overlap_val",type=float,default=0.1,help="Validation overlap fraction")
     parser.add_argument("--upscale_factor",type=int,default=4,choices=[2, 4],help="Super-resolution scale factor")
-
+    parser.add_argument("--max_epochs1", type=int, default=200, help="Define the maximun epochs for st1")
+    parser.add_argument("--max_epochs2", type=int, default=120, help="Define the maximun epochs for st2")
     return parser.parse_args()
 
 
