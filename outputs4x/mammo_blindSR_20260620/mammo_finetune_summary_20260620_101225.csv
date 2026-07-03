@@ -1,0 +1,6 @@
+model_name,source_model,params,best_val_psnr,ft_model_path
+gene_001,outputs4x/a100_fast_bestpsnr_20260519_131528/gene_001/stage2_p128_best.keras,7492,32.659297943115234,Outx4/mammo_ft/mammo_ft/gene_001/mammo_ft_best.keras
+gene_002,outputs4x/a100_fast_bestpsnr_20260519_131528/gene_002/stage2_p128_best.keras,9540,36.549095153808594,Outx4/mammo_ft/mammo_ft/gene_002/mammo_ft_best.keras
+gene_003,outputs4x/a100_fast_bestpsnr_20260519_131528/gene_003/stage2_p128_best.keras,21828,37.3364143371582,Outx4/mammo_ft/mammo_ft/gene_003/mammo_ft_best.keras
+gene_004,outputs4x/a100_fast_bestpsnr_20260519_131528/gene_004/stage2_p128_best.keras,34660,37.391204833984375,Outx4/mammo_ft/mammo_ft/gene_004/mammo_ft_best.keras
+gene_005,outputs4x/a100_fast_bestpsnr_20260519_131528/gene_005/stage2_p128_best.keras,122436,37.7035026550293,Outx4/mammo_ft/mammo_ft/gene_005/mammo_ft_best.keras
