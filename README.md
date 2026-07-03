@@ -24,7 +24,8 @@ This repository contains the official implementation for searching, training, an
 ## Dataset
 
 Download and unzip from: [DATASET]([https://drive.google.com/drive/folders/16BRmpJfa_fV5vXMs7WLQdSEpQv-qMkeo?usp=sharing](https://drive.google.com/file/d/1_lU1tOPnjN4B6phRV5Mx05pJ5KfKDqNE/view?usp=sharing))
-Or execute the script 0_getData.py
+
+Or execute the script `0_getData.py` to download the file, unzip and delete de zip file.
 ## 🚀 Pipeline Overview
 1. **Dataset Sampling & Balancing:** Filter and split medical domain scans (`mammo-bench`) while ensuring perfect demographic group representation over density classifications.
 
@@ -46,7 +47,8 @@ Although sampled splits are readily provided, you can completely replicate or mo
 This module enforces a Balanced Sampling Strategy over 6 distinct source databases (inbreast, kau-bcmd, cmmd, cdd-cesm, dmid, ddsm), assigning 80 training images and 16 validation images per dataset evenly divided across density levels (A, B, C, D).
 
 To run the replication selection filter:
-
+1. Download the original data set here: [Mammo-Bench](https://india-data.org/dataset-details/c86fb00c-0fb8-4e0e-85a2-4d415f9c1ada)
+2. Then run the script:
 ```python 1_select_mammo_images.py --csv mammo-bench.csv --out_dir DATASET --copy```
 
 ## 🧬 NSGA-III Search Space Configurations
@@ -61,7 +63,10 @@ The candidate architectures extracted from the genetic search are built as highl
 * **Stage 2:** Context scale expansion (doubling spatial window dimensions to $128 \times 128$) to improve global context awareness.
 To trigger the natural training routine:
 
-`python 3_TrainSR_GPU.py`
+
+`python 3_TrainSR_GPU.py --upscale_factor 2`
+or
+`python 3_TrainSR_GPU.py --upscale_factor 4`
 
 ## 🩺 Training Phase 2: Medical Fine-Tuning
 
