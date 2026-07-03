@@ -10,14 +10,11 @@ This repository contains the official implementation for searching, training, an
 │   └── mammo_val/            # Sampled Mammo balanced validation patches
 ├── Data/
 │   └── High/                 # High resolution datasets
-│   │   ├── Set5/             # HR set5 images (not in this repo)
 │   │   └── mammo_val/        # HR mammography images
 │   └── Lowx2/                # LR resolution datasets (scale x2)
-│   │   ├── Set5/             # HR set5 images (not in this repo)
-│   │   └── mammo_val/        # HR mammography images
+│   │   └── mammo_val/        # LR mammography images available after executing 5_min_test.py
 │   └── Lowx4/                # LR resolution datasets (scale x2)
-│       ├── Set5/             # HR set5 images (not in this repo)
-│       └── mammo_val/        # HR mammography images
+│       └── mammo_val/        # LR mammography images available after executing 5_min_test.py
 ├── pareto_models.csv         # Architecture configuration definitions
 ├── top_5_pareto_global.csv   # Comprehensive performance description
 │                               metrics for Pareto frontiers
@@ -28,7 +25,9 @@ This repository contains the official implementation for searching, training, an
 ├── 3_TrainSR_GPU.py          # Stage 1 & Stage 2 Coarse Trainer for
 │                               Natural Domains (DIV2K)
 └── 4_finetune_mammo_SR.py    # Domain Adaptation Fine-Tuning Controller
-                                for Medical Scans
+│                               for Medical Scans
+└── 5_main_test.py            # Creation of LR images for testing. And inference of algorithms
+└── 6_mean_psnr_per_seed.py   # Generates figures for paper
 ```
 
 ## Dataset
