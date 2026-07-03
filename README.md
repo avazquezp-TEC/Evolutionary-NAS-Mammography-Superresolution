@@ -53,7 +53,7 @@ To run the replication selection filter:
 
 ## 🧬 NSGA-III Search Space Configurations
 The repository includes the structural descriptions for the top 5 models discovered by the NSGA-III evolutionary algorithm optimizing trade-offs inside the BASS search space:
-* `top_5_pareto_models.csv`: Defines structural gene variables (number of residual groups, filter capacities, channel attention reduction, etc.) for each model.
+* `pareto_models.csv`: Defines structural gene variables (number of residual groups, filter capacities, channel attention reduction, etc.) for each model.
 * `top_5_pareto_global.csv`: Contains metadata descriptions, performance parameters, and efficiency metrics supporting the multi-objective selection choices.
 
 ## 🏋️‍♂️ Training Phase 1: Natural Images (DIV2K)
