@@ -123,6 +123,12 @@ Metrics such as Peak Signal-to-Noise Ratio (PSNR) and Mean Absolute Error (MAE) 
 * FINETUNE_RESULTS/ft_run_[timestamp]/finetune_summary.csv: Master dashboard tracking historical evaluation parameters for the Pareto-frontier models.
 
 ## Testing
+Configure and Execute the script `5_main_test.py`
+You can use anydata set, for example `Set5` or `Set14`. Plance the original dataset in `Data/High` and chage the line `SET = "dataset"`
+if `LR_PATH = ""' is empty the program will compute the LR image from the data set.
+Also if `MST=False`the program will create LR images only using bicubic degradation. if `MST=True` the program will excecute the Med-BSR degradation process.
+if `LR_PATH = "directory"' means that you have a LR datasets. In that case the program skips the degrade process. Dont forguet to change `MST=False`
 
+The program `6_mean_psnr_per_seed.py` generates the images for the paper only.
 ## 🛠️ Evironmente Requirements
 The requirementes are listed in the `requirements.txt` file
