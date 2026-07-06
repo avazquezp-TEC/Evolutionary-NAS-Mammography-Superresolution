@@ -21,7 +21,7 @@ Outputs:
   DATASET/mammo_val/       → copy of validation images
 
 Usage:
-  python select_mammo_images.py --out_dir DATASET --copy
+  python II_select_mammo_images.py --out_dir DATASET --copy
 
   # 15/06/26 initial version - cmmd has no density classification, samples randomly.
   cdd-cesm has 8 images of density A instead of the 24 required. It takes the 8 
