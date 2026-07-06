@@ -23,12 +23,12 @@ combined with the 6-method MST downsampling framework:
 
 Quick start:
   # Fine-tune a single model
-  python finetune_mammo_SR.py \
+  python IV_finetune_mammo_SR.py \
       --model_path outputs4x/.../stage2_p128_best.keras \
       --upscale 4 --grayscale
 
   # Fine-tune all NAS genes in a directory
-  python finetune_mammo_SR.py \
+  python IV_finetune_mammo_SR.py \
       --genes_dir outputs4x/a100_fast_bestpsnr_20260519_131528 \
       --out_dir   outputs \
       --upscale 4 --grayscale
