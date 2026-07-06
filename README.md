@@ -135,38 +135,48 @@ outputs{scale}x/a100_fast_bestpsnr_{run_id}/gene_{gen_id}/
 ├── stage2_p128_last.keras
 └── stage2_p128_log.csv
 ```
-## 🩺 Finetunning el Phase 2: Medical Fine-Tuning
+📦 Pretrained Models Note: For your convenience and to ensure reproducibility, the models trained with the DIV2K dataset under our paper's configuration have already been generated and included inside the following directories:
 
-Domain adaptation transfer learning targets medical diagnostics through 
+* For 2x Scale: `outputs2x/a100_fast_bestpsnr_20260526_105721/`
 
-`4_finetune_mammo_SR.py`.
+* For 4x Scale: `outputs4x/a100_fast_bestpsnr_20260519_131528/`
 
-Because low-resolution medical observations suffer from unpredictable hardware conditions, this script applies a customized Blind Degradation Architecture modeled directly after `mammo_degradation.py` (Med-BSR pipeline variant):
+## 🩺 Fine-Tuning Phase 2: Medical Domain (Mammo-Bench)
 
-### Degradation Workflow (`Med-BSR` + `MST` Integration)
+The script `IV_finetune_mammo_SR.py` adapts the pretrained natural domain models to specialized medical imaging. Because low-resolution medical observations suffer from unpredictable hardware conditions, this script applies a customized **Blind Degradation Architecture** modeled directly after `mammo_degradation.py` (Med-BSR pipeline variant).
+
+### 🔄 Degradation Workflow (`Med-BSR` + `MST` Integration)
 
 Every patch processing loop undergoes a randomized permutation sequence containing:
+1. **Blur Filters:** Randomly selects between Isotropic Gaussian ($B_{iso}$) or Anisotropic Gaussian ($B_{aniso}$) variants.
+2. **Noise Infusion:** Adds Additive Gaussian variations (Grayscale, independent Per-Channel, or Generalized scaling models).
+3. **Downsampling Filters:** Executes downscaling operations utilizing one of the 6 MST (Multi-Scale Transformation) methods (`Nearest`, `Bilinear`, `Bicubic`, `Lanczos`, `Box`, `Hamming`).
 
-1. __Blur Filters:__ Randomly selects between Isotropic Gaussian ($B_{iso}$) or Anisotropic Gaussian ($B_{aniso}$) variants.
+> 💡 **Training vs. Validation Behavior:** The training sequence randomizes both degradation parameters and scheduling configurations to maintain domain invariance. Conversely, validation steps apply a stable **Deterministic Round-Robin** sequence over the 6 MST filters to evaluate generalizability with strict reproducibility.
 
-2. __Noise Infusion:__ Adds Additive Gaussian variations (Grayscale, independent Per-Channel, or Generalized scaling models).
 
-3. __Downsampling Filters:__ Executes downscaling operations utilizing one of the 6 MST (Multi-Scale Transformation) methods (`Nearest`, `Bilinear`, `Bicubic`, `Lanczos`, `Box`, `Hamming`).
 
-### Fine-Tuning Execution
-The training sequence randomizes both degradation parameters and scheduling configurations to maintain domain invariance. Conversely, validation steps apply a stable __Deterministic Round-Robin__ sequence over the 6 MST filters to evaluate generalizability with strict reproducibility.
+### 🚀 Running the Fine-Tuning
 
-To start the target fine-tuning adaptation run:
+The script supports two execution modes via mutually exclusive arguments: you can either fine-tune a **single specific model** or an **entire directory of NAS-discovered genes**.
 
+#### Option A: Fine-tune all NAS genes inside a directory (Default Paper Setup)
+```bash
+python IV_finetune_mammo_SR.py \
+    --genes_dir outputs4x/a100_fast_bestpsnr_20260519_131528 \
+    --out_dir outputs \
+    --upscale 4 \
+    --grayscale
 ```
-python 4_finetune_mammo_SR.py \
-    --model_path /path/to/your/stage2_p128_best.keras \
-    --scale 4 \
-    --train_csv DATASET/mammo_train.csv \
-    --val_csv DATASET/mammo_val.csv
+#### Option B: Fine-tune a single specific model checkpoint
+```bash
+python IV_finetune_mammo_SR.py \
+    --model_path outputs4x/a100_fast_bestpsnr_20260519_131528/gene_001/stage2p_128_best.keras \
+    --out_dir outputs \
+    --upscale 4 \
+    --grayscale
 ```
-
-The description of degrade process is ilustrated here
+The description of degrade process is ilustrated here:
 ![workflow](figs/degrade_process.svg)
 ### 📈 Tracking & Outputs
 Metrics such as Peak Signal-to-Noise Ratio (PSNR) and Mean Absolute Error (MAE) are saved automatically into organized result summary ledgers:
