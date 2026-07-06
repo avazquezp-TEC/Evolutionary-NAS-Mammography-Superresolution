@@ -37,9 +37,6 @@ Dependencies:
   tensorflow >= 2.13, Pillow, numpy, scipy
   mammo_degradation.py  (must be in the same directory)
 
-References:
-  Shao et al. "Medical image blind super-resolution based on improved degradation process."
-  IET Image Processing 17, 1615-1625 (2023). https://doi.org/10.1049/ipr2.12742
 """
 
 from __future__ import annotations
