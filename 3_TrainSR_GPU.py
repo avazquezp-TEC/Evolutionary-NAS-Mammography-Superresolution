@@ -583,7 +583,7 @@ def main():
     np.random.seed(base_seed)
     tf.random.set_seed(base_seed)
     ratio = upscale_factor
-    outputspath = f"outputs{upscale_factor}"
+    outputspath = f"outputs{upscale_factor}x"
     
 
 
