@@ -36,7 +36,7 @@ def extract_database(filename: str) -> str:
     return 'Other'
 
 
-def plot_method_comparison(csv_path: str, scale: int, output_path: str | None = None) -> None:
+def plot_method_comparison(csv_path: str, scale: int, format: str, output_path: str | None = None) -> None:
     """
     Boxplots of average PSNR and SSIM by interpolation method.
 
@@ -70,16 +70,15 @@ def plot_method_comparison(csv_path: str, scale: int, output_path: str | None = 
     axes[1].tick_params(axis='x', rotation=45)
 
     plt.tight_layout()
-
     if output_path is None:
         os.makedirs('results', exist_ok=True)
-        output_path = f'results/degradation_comparison_x{scale}.eps'
+        output_path = f'results/degradation_comparison_x{scale}.{format}'
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
     plt.close()
     print(f"Figure saved: {output_path}")
 
 
-def plot_dataset_impact(csv_path: str, scale: int, output_path: str | None = None) -> None:
+def plot_dataset_impact(csv_path: str, scale: int, format: str, output_path: str | None = None) -> None:
     """
     Boxplots of PSNR and SSIM per source dataset, for a single per-image
     results CSV (e.g. one gene/method combination).
@@ -122,7 +121,7 @@ def plot_dataset_impact(csv_path: str, scale: int, output_path: str | None = Non
 
     if output_path is None:
         os.makedirs('results', exist_ok=True)
-        output_path = f'results/analysis_database_x{scale}.eps'
+        output_path = f'results/analysis_database_x{scale}.{format}'
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
     plt.close()
     print(f"Figure saved: {output_path}")
