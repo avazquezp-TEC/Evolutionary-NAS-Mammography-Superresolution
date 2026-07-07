@@ -3,7 +3,7 @@ This script tests Single Image Super-Resolution (SISR) models by calculating
 the PSNR and SSIM between the generated HR images and the original ground truth.
 
 Requirements:
-- Models must be generated using '../SRIR/trainSR.py'.
+- Models must be generated using 'III_TrainSR_GPU.py'. or finetuned with `ÌV_finetune_mammo_SR.py`
 - Define the model paths to evaluate in the 'EXPERIMENTS' list.
 - 'BASE_PATH' is the root directory where the generated models are located.
 - High-Resolution (HR) and Low-Resolution (LR) image paths must be defined.
@@ -11,8 +11,8 @@ Requirements:
   using the MST degradation framework (6 PIL-based methods):
     Nearest Neighbor · Bilinear · Bicubic · Lanczos · Box · Hamming
   Each method's LR images are saved in their own subdirectory, e.g.:
-        Data/Lowx2/Set5/nearest/
-        Data/Lowx2/Set5/bilinear/
+        Data/Lowx2/mammo_val/nearest/
+        Data/Lowx2/mammo_val/bilinear/
 
 Set MST = False to skip the 6-method comparison and evaluate a single
 pre-generated LR set located directly in LR_PATH (e.g. classic bicubic only).
@@ -32,22 +32,19 @@ import glob
 import argparse
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser( description=("Super-resolution Test uning improve Med-BSR degradation and 6-method MST downsampling."))
-
-    # --- Data paths ----------------------------------------------------------
-    p.add_argument("--dataset", default = "Data/High/mammo_val", type = str,
-                   help="Directory with training HR images")
-    p.add_argument("--scale",   default = 4, type = int,
-                   help="Upsampling scale factor")
-    g.add_argument("--genes_dir",  metavar="DIR",
-                   help="directory of trained models")
+    p.add_argument("--dataset", default="Data/High/mammo_val", type=str,
+                   help="Path to the directory containing High-Resolution (HR) ground truth images.")
+    p.add_argument("--scale",   default=4, type=int,
+                   help="Upsampling scale factor for Super-Resolution (e.g., 2, 4, 8).")
+    p.add_argument("--genes_dir",  metavar="DIR", required=True,
+                   help="Root directory containing the trained NAS sub-models (e.g., gene_001/, gene_002/).")
     p.add_argument("--out_dir",   default="Data/Outx4/mammo_val",
-                   help="Root output directory for checkpoints and logs.")
-    p.add_argument("--bicubic, action = store_false",
-                   help="if the argument is added, the only downsampling with bicubic will be executed ")
-    p.add_argument("--lr_path",  metavar="DIR", default = "Data/Lowx4/mammo_val",
-                   help="Directory of LR data. if not provided the program will generate its own")
+                   help="Root directory where evaluation outputs, checkpoints, and logs will be saved.")
+    p.add_argument("--bicubic", action="store_false",
+                   help="Disable the full pipeline and only execute bicubic downsampling (default: True).")
+    p.add_argument("--lr_path",  metavar="DIR", default="",
+                   help="Optional path to pre-degraded Low-Resolution (LR) images. If not provided, LR images will be generated on-the-fly from the HR dataset.")
     return p.parse_args()
-
 def main() -> None:
     args = parse_args()
     # --- 1. Configuration constants ────────────────────────────────────────
