@@ -2,7 +2,7 @@ import gdown
 import zipfile
 import os
 
-file_id = "1uzvq4-Ad-sBzQQvt8yui9aOwM_SfxVya"
+file_id = "1cJa_I6f3CyoyCOQMqXjbBzBkr35Uv-eG"
 
 # Descargar en el directorio actual
 gdown.download(
