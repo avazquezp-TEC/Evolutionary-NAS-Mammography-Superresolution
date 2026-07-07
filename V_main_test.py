@@ -28,31 +28,52 @@ Updated 2026-06-16: SSIM added. Downsampling methods are evaluated one per image
 from degrade_and_downsample_folder import generate_lr_images, MST_NAMES
 from model_test import run_super_resolution_and_psnr
 import os
+import glob
+import argparse
+def parse_args() -> argparse.Namespace:
+    p = argparse.ArgumentParser( description=("Super-resolution Test uning improve Med-BSR degradation and 6-method MST downsampling."))
 
-if __name__ == "__main__":
+    # --- Data paths ----------------------------------------------------------
+    p.add_argument("--dataset", default = "Data/High/mammo_val", type = str,
+                   help="Directory with training HR images")
+    p.add_argument("--scale",   default = 4, type = int,
+                   help="Upsampling scale factor")
+    g.add_argument("--genes_dir",  metavar="DIR",
+                   help="directory of trained models")
+    p.add_argument("--out_dir",   default="Data/Outx4/mammo_val",
+                   help="Root output directory for checkpoints and logs.")
+    p.add_argument("--bicubic, action = store_false",
+                   help="if the argument is added, the only downsampling with bicubic will be executed ")
+    p.add_argument("--lr_path",  metavar="DIR", default = "Data/Lowx4/mammo_val",
+                   help="Directory of LR data. if not provided the program will generate its own")
+    return p.parse_args()
+
+def main() -> None:
+    args = parse_args()
     # --- 1. Configuration constants ────────────────────────────────────────
-    SET = "mammo_val"
-    SCALE_FACTOR = 4  # Scale factor (e.g. 2 or 4), depending on the model
-    MST = True  # If False, the script only looks for images directly in LR_PATH
-                # (e.g. a single pre-generated bicubic set), skipping the 6-method comparison
-
-    # --- 2. Model folders ────────────────────────────────────────────────────
-    BASE_PATH = f"../SRIR/outputs{SCALE_FACTOR}x/mammo_ft_blindSR"
-
-    # --- 3. Image paths ──────────────────────────────────────────────────────
-    HR_PATH = f"Data/High/{SET}"
-    # Leave LR_PATH empty ("") to automatically generate low-resolution images
-    LR_PATH = f"Data/Lowx{SCALE_FACTOR}/{SET}"
-    OUT_BASE_PATH = f"Data/Outx{SCALE_FACTOR}/{SET}"
+    SCALE_FACTOR = args.scale
+    MST = args.bicubic
+    BASE_PATH = args.genes_dir
+    HR_PATH = args.dataset
+    LR_PATH = args.lr_path
+    OUT_BASE_PATH = args.out_dir
 
     # --- 4. Define experiments, one entry per generation ────────────────────
-    EXPERIMENTS = [
-        {"model_path": f"{BASE_PATH}/gene_001/mammo_ft_best.keras", "output_path": f"{OUT_BASE_PATH}/gene_001"},
-        {"model_path": f"{BASE_PATH}/gene_002/mammo_ft_best.keras", "output_path": f"{OUT_BASE_PATH}/gene_002"},
-        {"model_path": f"{BASE_PATH}/gene_003/mammo_ft_best.keras", "output_path": f"{OUT_BASE_PATH}/gene_003"},
-        {"model_path": f"{BASE_PATH}/gene_004/mammo_ft_best.keras", "output_path": f"{OUT_BASE_PATH}/gene_004"},
-        {"model_path": f"{BASE_PATH}/gene_005/mammo_ft_best.keras", "output_path": f"{OUT_BASE_PATH}/gene_005"},
-    ]
+    pattern_genes = os.path.join(BASE_PATH, "gene_*")
+    gene_paths = sorted(glob.glob(pattern_genes))
+
+    EXPERIMENTS = []
+    for gene_path in gene_paths: #Search genes folder in base path
+        if os.path.isdir(gene_path):
+            pattern_keras = os.path.join(gene_path, "*best*.keras") # find any best keras file
+            matching_files = glob.glob(pattern_keras)
+            if matching_files:
+                keras_file = matching_files[0] #get complete path
+                gene_name = os.path.basename(gene_path)
+                EXPERIMENTS.append({
+                    "model_path": keras_file,
+                    "output_path": f"{OUT_BASE_PATH}/{gene_name}"
+                })
 
     # --- 5. Generate LR images if LR_PATH is empty ──────────────────────────
     if LR_PATH == "":
@@ -102,3 +123,6 @@ if __name__ == "__main__":
                 scale_factor=SCALE_FACTOR,
                 csv_path="registro_psnr_ssim.csv"
             )
+
+if __name__ == "__main__":
+    main()
