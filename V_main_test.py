@@ -3,7 +3,7 @@ This script tests Single Image Super-Resolution (SISR) models by calculating
 the PSNR and SSIM between the generated HR images and the original ground truth.
 
 Requirements:
-- Models must be generated using 'III_TrainSR_GPU.py'. or finetuned with `ÌV_finetune_mammo_SR.py`
+- Models must be generated using '../SRIR/trainSR.py'.
 - Define the model paths to evaluate in the 'EXPERIMENTS' list.
 - 'BASE_PATH' is the root directory where the generated models are located.
 - High-Resolution (HR) and Low-Resolution (LR) image paths must be defined.
@@ -109,7 +109,7 @@ def main() -> None:
                     ground_truth_path=HR_PATH,
                     output_image_path=out_method_path,
                     scale_factor=SCALE_FACTOR,
-                    csv_path=f"registro_psnr_ssim_{method}.csv"
+                    csv_path=f"register_psnr_ssim_{method}.csv"
                 )
         else:
             run_super_resolution_and_psnr(
@@ -118,7 +118,7 @@ def main() -> None:
                 ground_truth_path=HR_PATH,
                 output_image_path=exp["output_path"],
                 scale_factor=SCALE_FACTOR,
-                csv_path="registro_psnr_ssim.csv"
+                csv_path="register_psnr_ssim.csv"
             )
 
 if __name__ == "__main__":
