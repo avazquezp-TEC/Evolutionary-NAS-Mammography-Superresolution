@@ -35,7 +35,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--dataset", default="Data/High/mammo_val", type=str,
                    help="Path to the directory containing High-Resolution (HR) ground truth images.")
     p.add_argument("--scale",   default=4, type=int,
-                   help="Upsampling scale factor for Super-Resolution (e.g., 2, 4, 8).")
+                   help="Upsampling scale factor for Super-Resolution (e.g., 2, 4).")
     p.add_argument("--genes_dir",  metavar="DIR", required=True,
                    help="Root directory containing the trained NAS sub-models (e.g., gene_001/, gene_002/).")
     p.add_argument("--out_dir",   default="Data/Outx4/mammo_val",
