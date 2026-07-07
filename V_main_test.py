@@ -41,7 +41,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--out_dir",   default="Data/Outx4/mammo_val",
                    help="Root directory where evaluation outputs, checkpoints, and logs will be saved.")
     p.add_argument("--bicubic", action="store_false",
-                   help="Disable the full pipeline and only execute bicubic downsampling (default: True).")
+                   help="Disable the full pipeline and only execute bicubic downsampling (default: False).")
     p.add_argument("--lr_path",  metavar="DIR", default="",
                    help="Optional path to pre-degraded Low-Resolution (LR) images. If not provided, LR images will be generated on-the-fly from the HR dataset.")
     return p.parse_args()
