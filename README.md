@@ -33,11 +33,11 @@ This repository contains the official implementation for searching, training, an
 
 ## Dataset Setup
 
-* **Option 1 (Manual):** Download the file from this [Google Drive Link](https://drive.google.com/file/d/1uzvq4-Ad-sBzQQvt8yui9aOwM_SfxVya/view?usp=sharing) and unzip it directly into the repository's root folder.
+* **Option 1 (Manual):** Download the file from this [Google Drive Link](https://drive.google.com/file/d/1cJa_I6f3CyoyCOQMqXjbBzBkr35Uv-eG/view?usp=sharing) and unzip it directly into the repository's root folder.
 * **Option 2 (Automatic):** Run the provided script to download, unzip, and clean up the environment automatically:
   ```bash
-  python 1_getData.py
-  
+  python I_getData.py
+  ```
 ### 🚀 Pipeline Overview
 1. **Dataset Sampling & Balancing:** Filter and split medical domain scans (`mammo-bench`) while ensuring perfect demographic group representation over density classifications.
 
@@ -59,14 +59,14 @@ This is a separate directory dedicated exclusively to evaluation and benchmarkin
 * **Medical SR Benchmark:** Contains a distinct set of medical domain images designed specifically to serve as the super-resolution (SR) benchmark.
 
 #### Replicating the Mammography Split
-Although sampled splits are readily provided, you can completely replicate or modify the sampling layout using `1_select_mammo_images.py`.
+Although sampled splits are readily provided, you can completely replicate or modify the sampling layout using `II_select_mammo_images.py`.
 
 This module enforces a Balanced Sampling Strategy over 6 distinct source databases (inbreast, kau-bcmd, cmmd, cdd-cesm, dmid, ddsm), assigning 80 training images and 16 validation images per dataset evenly divided across density levels (A, B, C, D).
 
 To run the replication selection filter:
 1. Download the original data set here: [Mammo-Bench](https://india-data.org/dataset-details/c86fb00c-0fb8-4e0e-85a2-4d415f9c1ada)
 2. Then run the script:
-```python 2_select_mammo_images.py --csv mammo-bench.csv --out_dir DATASET --copy```
+```python II_select_mammo_images.py --csv mammo-bench.csv --out_dir DATASET --copy```
 
 
 ## 🧬 NSGA-III Search Space Configurations
@@ -90,7 +90,7 @@ You can modify the architecture according to the BASS search space specification
 
 ## 🏋️‍♂️ Training Phase 1: Natural Images (DIV2K)
 
-The candidate architectures extracted from the genetic search are built as highly performant RCAN (Residual Channel Attention Network) models. Initial coarse training is conducted via `3_TrainSR_GPU.py` inside a 2-Stage optimization loop:
+The candidate architectures extracted from the genetic search are built as highly performant RCAN (Residual Channel Attention Network) models. Initial coarse training is conducted via `III_TrainSR_GPU.py` inside a 2-Stage optimization loop:
 
 * **Stage 1:** Coarse feature training mapping L1 loss functions on targeted crops.
 * **Stage 2:** Context scale expansion (doubling spatial window dimensions to $128 \times 128$) to improve global context awareness.
@@ -100,16 +100,16 @@ To replicate the exact training routine used in our paper, trigger the script by
 
 ```bash
 # For 2x Super-Resolution
-python 3_TrainSR_GPU.py --upscale_factor 2
+python III_TrainSR_GPU.py --upscale_factor 2
 
 # For 4x Super-Resolution
-python 3_TrainSR_GPU.py --upscale_factor 4
+python III_TrainSR_GPU.py --upscale_factor 4
 ```
 
 ### ⚙️ Custom Configuration
 If you want to customize the training process, the script supports several arguments. You can modify the behavior directly from the command line:
-|Argument |Type | Default Description |
-| ------- | --- | ------------------- |
+|Argument |Type | Default | Description |
+| ------- | --- | ------- | --------- |
 --upscale_factor | int | 4 | Super-resolution scale factor (2 or 4). |
 --directory_train | str | "DATASET/DIV2K_train_HR" | Path to the training images directory
 --directory_val | str | "DATASET/DIV2K_valid_HR" | Path to the validation images directory.
@@ -176,22 +176,127 @@ python IV_finetune_mammo_SR.py \
     --upscale 4 \
     --grayscale
 ```
+### 💾 Outputs & Logs
+Upon running the script, the training process creates Keras model checkpoints and execution logs. These are automatically organized into structured directories:
+
+Output Directory Structure:
+
+```
+outputs{scale}x/mammo_blindSR{run_id}/gene_{gen_id}/
+├── mammo_ft_best.keras
+├── mammo_ft_last.keras
+└── mammo_ft_log.csv
+```
+
+📦 Pretrained Models Note: For your convenience and to ensure reproducibility, the models trained with the DIV2K dataset under our paper's configuration have already been generated and included inside the following directories:
+
+* For 2x Scale: `outputs2x/mammo_blindSR2020/`
+
+* For 4x Scale: `outputs4x/mammo_blindSR20260706_162533/`
+
 The description of degrade process is ilustrated here:
 ![workflow](figs/degrade_process.svg)
-### 📈 Tracking & Outputs
-Metrics such as Peak Signal-to-Noise Ratio (PSNR) and Mean Absolute Error (MAE) are saved automatically into organized result summary ledgers:
 
-* DATASET/mammo_split_summary.txt: Details dataset distribution tallies and demographic safety assertions.
-
-* FINETUNE_RESULTS/ft_run_[timestamp]/finetune_summary.csv: Master dashboard tracking historical evaluation parameters for the Pareto-frontier models.
 
 ## Testing
-Configure and Execute the script `5_main_test.py`
-You can use anydata set, for example `Set5` or `Set14`. Plance the original dataset in `Data/High` and chage the line `SET = "dataset"`
-if `LR_PATH = ""' is empty the program will compute the LR image from the data set.
-Also if `MST=False`the program will create LR images only using bicubic degradation. if `MST=True` the program will excecute the Med-BSR degradation process.
-if `LR_PATH = "directory"' means that you have a LR datasets. In that case the program skips the degrade process. Dont forguet to change `MST=False`
 
-The program `6_mean_psnr_per_seed.py` generates the images for the paper only.
-## 🛠️ Evironmente Requirements
-The requirementes are listed in the `requirements.txt` file
+Configure and execute the evaluation script `V_main_test.py`. 
+You can use any dataset, such as `Set5`, `Set14`, or `BSD100`. Place the original high-resolution dataset in the `Data/High/` directory.
+
+### Usage Example
+```bash
+python V_main_test.py --scale 4 --genes_dir outputs4x/mammo_blindSR_20260620/
+````
+### Arguments Reference
+where: 
+Argument   |Type  | Default                | Description 
+ -------   | ---  | ---------------------- | ----------- 
+--dataset  | str  | "Data/High/mammo_val"  | Path to HR ground truth images. 
+--scale    | int  | 4                      | Upsampling scale factor for Super-Resolution (2,4).
+--genes_dir| str  | Required               | Root directory containing the trained NAS models
+--out_dir  | str  | "Data/Outx4/mammo_val" | Root directory where evaluation outputs, checkpoints, and logs will be saved.
+--bicubic  | bool | False                  | Execute bicubic downsampling only.
+--lr_path  | str  | ""                     | Path to pre-degraded Low-Resolution (LR) images. 
+
+### Degradation and LR Data Behavior
+
+* Low-Resolution Data (`--lr_path`):
+  * If `--lr_path` is not provided (left empty), the program will automatically generate the Low-Resolution (LR) images on-the-fly from the HR dataset.
+  * If a directory is provided via --lr_path, the program assumes you already have a pre-degraded LR dataset and will skip the internal degradation process entirely.
+* Degradation Method (`--bicubic`):
+  * Default behavior: The program executes the advanced Med-BSR degradation process to evaluate the models.
+  * Bicubic Only: Adding the `--bicubic` flag disables Med-BSR, forcing the program to generate LR images using standard bicubic downsampling only.
+
+### Output Directory Structure
+
+By default, the evaluation results are saved in `Data/Outx4/mammo_val`. Inside this root output directory, the program automatically creates a structured hierarchy for each discovered NAS sub-model and degradation method:
+
+```text
+Data/Outx4/mammo_val/
+├── gene_001/
+│   ├── bicubic/
+│   │   ├── restored_image_001.png
+│   │   ├── restored_image_002.png
+│   │   └── register_psnr_ssim_bicubic.csv
+│   ├── bilinear/
+│   │   └── ...
+│   └── nearest/
+│       └── ...
+├── gene_002/
+└── ...
+└── gene_005/
+```
+
+Inside each `gene_XXX` folder:
+* Subdirectories by Method: Separate folders are created for each evaluation method: `bicubic`, `bilinear`, `box`, `hamming`, `lanczos`, and `nearest`. Each folder contains the images reconstructed/super-resolved by that specific sub-model.
+* Evaluation Metrics (CSV Reports):
+  * Standard Execution: Each method folder contains a summary report named `register_psnr_ssim_{method}.csv` (e.g., register_psnr_ssim_bilinear.csv) tracking the PSNR and SSIM metrics for all processed images.
+
+  * Bicubic-Only Execution (`--bicubic flag`): If the `--bicubic` flag is used, only the bicubic degradation is executed, and the evaluation report inside the bicubic directory will be named simply `register_psnr_ssim.csv` and the subdirectories by method will not be generated.
+
+
+## Result Analysis
+
+The script `VI_mean_psnr_per_seed.py` is used to generate the statistical analysis and plots for the paper. 
+
+### Usage Example
+To run the analysis with the default configuration, execute:
+```bash
+python VI_mean_psnr_per_seed.py
+````
+
+You can modify the arguments as follows:
+
+Argument  | Type | Default    | Description 
+ -------  | ---- | ---------- | ----------- 
+--gene    | str  | "gene_005" | The specific gene model to be evaluated in the analysis.
+--method  | str  | "nearest"  | The degradation method to be analyzed.
+--out_dir | str  | "Analysis" | Directory where evaluation plots and summary reports will be saved.
+--format  | str  | "png"      | File format for the generated figures (e.g., png, eps, svg).
+
+### Results and Outputs
+
+All generated files are stored in the directory specified by `--out_dir` (default: `Analysis/`). The script produces both visual plots and tabular data:
+
+📊 Graphical Plots
+* `analysis_database_{scale}.{format}`: Comprehensive plot analyzing the behavior across the dataset.
+* `degradation_comparison_{scale}.{format}`: Visual comparison of the model's performance against different degradation methods.
+
+📋 Summary Reports (CSV)
+* `mean_per_gene_{scale}.csv`: Contains the average metrics (PSNR/SSIM) calculated per gene across all tests.
+* `mean_per_gene_method_{scale}.csv`: Detailed breakdown of the average metrics per gene, grouped by each specific degradation method.
+
+## 🛠️ Environment Requirements
+
+The project dependencies and environmental requirements are listed in the `requirements.txt` file. To install them, run:
+```bash
+pip install -r requirements.txt
+```
+
+## 📄 License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. You are free to use, modify, and distribute this software for academic and commercial purposes, provided the original copyright notice is included.
+
+## ✍️ Citation
+This paper is currently under review. The complete citation and BibTeX entry will be updated and made available here as soon as the manuscript is formally accepted.
+
+In the meantime, if you use this code or dataset in your research, please link back to this repository.
