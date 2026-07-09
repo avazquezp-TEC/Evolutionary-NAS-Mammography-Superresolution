@@ -1,6 +1,7 @@
 # Medical Super-Resolution Repository
 
 This repository contains the official implementation for searching, training, and fine-tuning optimized Super-Resolution (SR) models via NSGA-III under the BASS (Blind and Anisotropic Search Space) framework. The pipeline targets both natural image domains and specialized medical image transfer learning, specifically optimized for mammography scans using advanced blind degradation models.
+This repository requieres Python 3.11
 
 ## 📂 Project Structure
 ```
