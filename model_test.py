@@ -28,7 +28,7 @@ from PIL import Image
 import csv
 import tifffile
 import pydicom
-
+import gc
 
 def load_image_universal(path):
     """
@@ -183,7 +183,8 @@ def run_super_resolution_and_psnr(
 
             # ── Inference ────────────────────────────────────────────────
             print(f"Processing {filename}...")
-            output = np.squeeze(model.predict(input_tensor, verbose=0), axis=0)
+            #output = np.squeeze(model.predict(input_tensor, verbose=0), axis=0)
+            output = np.squeeze(model(input_tensor, training=False).numpy(), axis=0)
             output = np.clip(output, 0, 1)
 
             # ── Save SR image ───────────────────────────────────────────
@@ -266,6 +267,15 @@ def run_super_resolution_and_psnr(
                 writer.writerow([filename, f"{psnr_v:.4f}", f"{ssim_v:.4f}"])
 
     print(f"Results saved to: {csv_file}")
+    
+    if 'model' in locals():
+        del model
+    if 'psnr_list' in locals():
+        del psnr_list
+    if 'ssim_list' in locals():
+        del ssim_list
+    tf.keras.backend.clear_session()
+    gc.collect()
 
 
 # ── Example usage ──────────────────────────────────────────────────────────
