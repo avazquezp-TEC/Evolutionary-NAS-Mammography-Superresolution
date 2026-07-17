@@ -42,6 +42,7 @@ Dependencies:
 from __future__ import annotations
 
 import os
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 import csv
 import glob
 import datetime
@@ -626,6 +627,7 @@ def make_callbacks(
     stage_name: str,
     es_patience: int,
     es_min_delta: float,
+    use_lr_schedule: bool = False,
 ) -> list:
     """
     Build the standard callback set for fine-tuning.
@@ -640,7 +642,7 @@ def make_callbacks(
     TerminateOnNaN   : Immediately stops training if a NaN loss is detected.
     """
     os.makedirs(stage_dir, exist_ok=True)
-    return [
+    callbacks = [
         tf.keras.callbacks.CSVLogger(
             os.path.join(stage_dir, f"{stage_name}_log.csv"), append=False
         ),
@@ -652,18 +654,27 @@ def make_callbacks(
             filepath=os.path.join(stage_dir, f"{stage_name}_last.keras"),
             save_best_only=False, verbose=0,
         ),
-        tf.keras.callbacks.ReduceLROnPlateau(
-            monitor="val_psnr", mode="max",
-            factor=0.5, patience=max(2, es_patience // 4),
-            min_lr=1e-7, verbose=1,
-        ),
         tf.keras.callbacks.EarlyStopping(
-            monitor="val_psnr", mode="max",
-            patience=es_patience, min_delta=es_min_delta,
-            restore_best_weights=True, verbose=1,
-        ),
-        tf.keras.callbacks.TerminateOnNaN(),
-    ]
+            monitor="val_psnr",
+            mode="max",
+            patience=es_patience,
+            min_delta=es_min_delta,
+            restore_best_weights=True,
+            verbose=1),
+        tf.keras.callbacks.TerminateOnNaN()]
+    if not use_lr_schedule:
+        callbacks.insert(
+            3,
+            tf.keras.callbacks.ReduceLROnPlateau(
+                monitor="val_psnr",
+                mode="max",
+                factor=0.5,
+                patience=max(2, es_patience // 4),
+                min_lr=1e-7,
+                verbose=1
+            )
+        )
+    return callbacks
 
 
 # ===========================================================================
@@ -763,7 +774,7 @@ def finetune_one(
         epochs=max_epochs,
         steps_per_epoch=train_steps,
         validation_steps=val_steps,
-        callbacks=make_callbacks(stage_dir, "mammo_ft", es_patience, es_min_delta),
+        callbacks=make_callbacks(stage_dir,"mammo_ft",es_patience,es_min_delta,use_lr_schedule=use_cosine_lr),
         verbose=1,
     )
 
