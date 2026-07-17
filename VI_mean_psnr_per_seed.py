@@ -7,12 +7,12 @@ generated for each scale.
 Expected structure (relative to the project root):
   Data/Outx{scale}/mammo_val/
     gene_{id}/
-      bicubic/registro_psnr_ssim_bicubic.csv
-      bilinear/registro_psnr_ssim_bilinear.csv
-      box/registro_psnr_ssim_box.csv
-      hamming/registro_psnr_ssim_hamming.csv
-      lanczos/registro_psnr_ssim_lanczos.csv
-      nearest/registro_psnr_ssim_nearest.csv
+      bicubic/register_psnr_ssim_bicubic.csv
+      bilinear/register_psnr_ssim_bilinear.csv
+      box/register_psnr_ssim_box.csv
+      hamming/register_psnr_ssim_hamming.csv
+      lanczos/register_psnr_ssim_lanczos.csv
+      nearest/register_psnr_ssim_nearest.csv
 
 Run this script from the project root (the folder that contains "Data/",
 alongside main.py).
@@ -84,7 +84,7 @@ def main():
 
         if not os.path.isdir(root):
             print(f"  [WARN] Folder '{root}' does not exist, skipping scale {scale}x")
-            return
+            continue
 
         genes = find_genes(root)
         if not genes:
@@ -158,7 +158,7 @@ def main():
 
         dataset_impact_csv = os.path.join(
             root, DATASET_IMPACT_GENE, DATASET_IMPACT_METHOD,
-            f"registro_psnr_ssim_{DATASET_IMPACT_METHOD}.csv"
+            f"register_psnr_ssim_{DATASET_IMPACT_METHOD}.csv"
         )
         plot_dataset_impact(dataset_impact_csv, scale, format)
 
