@@ -1,6 +1,6 @@
 gdown==6.1.0
 matplotlib==3.11.0
-numpy==2.5.1
+numpy==2.0.2
 pandas==3.0.3
 Pillow==12.3.0
 pydicom==3.0.2
