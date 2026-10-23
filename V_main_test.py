@@ -38,7 +38,7 @@ def parse_args() -> argparse.Namespace:
                    help="Upsampling scale factor for Super-Resolution (e.g., 2, 4).")
     p.add_argument("--genes_dir",  metavar="DIR", required=True,
                    help="Root directory containing the trained NAS sub-models (e.g., gene_001/, gene_002/).")
-    p.add_argument("--out_dir",   default="Data/Outx4/mammo_val",
+    p.add_argument("--out_dir",   default="Data/Outx4/mammo_test",
                    help="Root directory where evaluation outputs, checkpoints, and logs will be saved.")
     p.add_argument("--bicubic", action="store_false",
                    help="Disable the full pipeline and only execute bicubic downsampling (default: False).")
