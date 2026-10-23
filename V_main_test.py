@@ -32,7 +32,7 @@ import glob
 import argparse
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser( description=("Super-resolution Test uning improve Med-BSR degradation and 6-method MST downsampling."))
-    p.add_argument("--dataset", default="Data/High/mammo_val", type=str,
+    p.add_argument("--dataset", default="Data/High/mammo_train", type=str,
                    help="Path to the directory containing High-Resolution (HR) ground truth images.")
     p.add_argument("--scale",   default=4, type=int,
                    help="Upsampling scale factor for Super-Resolution (e.g., 2, 4).")
