@@ -210,14 +210,14 @@ python V_main_test.py --scale 4 --genes_dir outputs4x/mammo_blindSR_20260620/
 ````
 ### Arguments Reference
 where: 
-Argument   |Type  | Default                | Description 
- -------   | ---  | ---------------------- | ----------- 
---dataset  | str  | "Data/High/mammo_val"  | Path to HR ground truth images. 
---scale    | int  | 4                      | Upsampling scale factor for Super-Resolution (2,4).
---genes_dir| str  | Required               | Root directory containing the trained NAS models
---out_dir  | str  | "Data/Outx4/mammo_val" | Root directory where evaluation outputs, checkpoints, and logs will be saved.
---bicubic  | bool | False                  | Execute bicubic downsampling only.
---lr_path  | str  | ""                     | Path to pre-degraded Low-Resolution (LR) images. 
+Argument   |Type  | Default                  | Description 
+ -------   | ---  | ------------------------ | ----------- 
+--dataset  | str  | "Data/High/mammo_train"  | Path to HR ground truth images. 
+--scale    | int  | 4                        | Upsampling scale factor for Super-Resolution (2,4).
+--genes_dir| str  | Required                 | Root directory containing the trained NAS models
+--out_dir  | str  | "Data/Outx4/mammo_train" | Root directory where evaluation outputs, checkpoints, and logs will be saved.
+--bicubic  | bool | False                    | Execute bicubic downsampling only.
+--lr_path  | str  | ""                       | Path to pre-degraded Low-Resolution (LR) images. 
 
 ### Degradation and LR Data Behavior
 
